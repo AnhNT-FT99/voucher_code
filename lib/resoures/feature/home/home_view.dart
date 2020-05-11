@@ -1,5 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:voucherapp/resoures/data/model/result_model.dart';
+import 'package:voucherapp/resoures/feature/home/home_bloc.dart';
+import 'package:voucherapp/resoures/feature/home/home_event.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:voucherapp/resoures/feature/home/home_state.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -7,181 +12,86 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePage extends State<HomePage> {
+  VoucherBloc articleBloc;
 
   @override
   void initState() {
     super.initState();
+    articleBloc = BlocProvider.of<VoucherBloc>(context);
+    articleBloc.add(FetchDataVoucherEvent());
   }
 
-
-  Widget NoNetworkConnected = Center(
-    child: Padding(
-      padding: EdgeInsets.only(left: 16.0, right: 16.0),
-      child: Center(
+  Widget buildVoucherList(List<Voucher> articles) {
+      return Container(
+        child: ListView.builder(
+          padding: const EdgeInsets.all(30),
+          itemCount: articles.length,
+          itemBuilder: (ctx, pos) {
+            return Card(
+              color: Colors.white,
+              child: InkWell(
+                splashColor: Colors.blue.withAlpha(30),
+                onTap: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) => CustomDialog(
+                        name: "Giảm giá 40%",
+                        voucher: "Code: XAV360",
+                        descripsion:
+                        "Chỉ áp dụng cho đơn hàng đầu tiên thanh toán tiền mặt, áp dụng với khách hàng mới của GrabFood",
+                      ));
+                },
+                child: Container(
+                  height: 200,
+                  child: Row(
+                    children: [
+                      Image(
+                        height: 100,
+                        image: AssetImage('assets/vouchergrab.jpg'),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              '${ articles[pos].voucherName}',
+                              style: TextStyle(color: Colors.red, fontSize: 30),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Text(
+                              'Mã giảm giá: ******',
+                              style: TextStyle(
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      );
+  }
+  Widget buildErrorUi(String message) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: Text(
-          "Lỗi kết nối mạng",
-          textScaleFactor: 2.0,
-          textAlign: TextAlign.center,
+          message,
+          style: TextStyle(color: Colors.red),
         ),
       ),
-    ),
-  );
-
-  List<Widget> containers = [
-    Container(
-      child: ListView.separated(
-        padding: const EdgeInsets.all(30),
-        itemCount: 8,
-        itemBuilder: (BuildContext context, int index) {
-          return Card(
-            color: Colors.white,
-            child: InkWell(
-              splashColor: Colors.blue.withAlpha(30),
-              onTap: () {
-                showDialog(context: context,builder: (context) => CustomDialog(
-                  name: "Giảm giá 40%",
-                  voucher: "Code: XAV360",
-                  descripsion: "Chỉ áp dụng cho đơn hàng đầu tiên thanh toán tiền mặt, áp dụng với khách hàng mới của GrabFood",
-                ));
-              },
-              child: Container(
-                height: 200,
-                child: Row(
-                  children: [
-                    Image(
-                      height: 100,
-                      image: AssetImage('assets/vouchergrab.jpg'),
-                    ),
-                    SizedBox(width: 20,),
-                    Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text('Giảm 40%',style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 30
-                          ),
-                          ),
-                          SizedBox(height: 20,),
-                          Text('Mã giảm giá: ******',style: TextStyle(
-                            color: Colors.black,
-                          ),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
-        separatorBuilder: (BuildContext context, int index) => const Divider(),
-      ),
-    ),
-    Container(
-      child: ListView.separated(
-        padding: const EdgeInsets.all(30),
-        itemCount: 8,
-        itemBuilder: (BuildContext context, int index) {
-          return Card(
-            color: Colors.white,
-            child: InkWell(
-              splashColor: Colors.blue.withAlpha(30),
-              onTap: () {
-                showDialog(context: context,builder: (context) => CustomDialog(
-                  name: "Giảm giá 40%",
-                  voucher: "Code: XAV360",
-                  descripsion: "Chỉ áp dụng cho đơn hàng đầu tiên thanh toán tiền mặt, áp dụng với khách hàng mới của GrabFood",
-                ));
-              },
-              child: Container(
-                height: 200,
-                child: Row(
-                  children: [
-                    Image(
-                      height: 100,
-                      image: AssetImage('assets/vouchergrab.jpg'),
-                    ),
-                    SizedBox(width: 20,),
-                    Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text('Giảm 40%',style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 30
-                          ),
-                          ),
-                          SizedBox(height: 20,),
-                          Text('Mã giảm giá: ******',style: TextStyle(
-                            color: Colors.black,
-                          ),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
-        separatorBuilder: (BuildContext context, int index) => const Divider(),
-      ),
-    ),
-    Container(
-      child: ListView.separated(
-        padding: const EdgeInsets.all(30),
-        itemCount: 8,
-        itemBuilder: (BuildContext context, int index) {
-          return Card(
-            color: Colors.white,
-            child: InkWell(
-              splashColor: Colors.blue.withAlpha(30),
-              onTap: () {
-                showDialog(context: context,builder: (context) => CustomDialog(
-                  name: "Giảm giá 40%",
-                  voucher: "Code: XAV360",
-                  descripsion: "Chỉ áp dụng cho đơn hàng đầu tiên thanh toán tiền mặt, áp dụng với khách hàng mới của GrabFood",
-                ));
-              },
-              child: Container(
-                height: 200,
-                child: Row(
-                  children: [
-                    Image(
-                      height: 100,
-                      image: AssetImage('assets/vouchergrab.jpg'),
-                    ),
-                    SizedBox(width: 20,),
-                    Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text('Giảm 40%',style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 30
-                          ),
-                          ),
-                          SizedBox(height: 20,),
-                          Text('Mã giảm giá: ******',style: TextStyle(
-                            color: Colors.black,
-                          ),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
-        separatorBuilder: (BuildContext context, int index) => const Divider(),
-      ),
-    ),
-  ];
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -194,12 +104,7 @@ class _HomePage extends State<HomePage> {
                   gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-
-                      colors: <Color>[
-                        Color(0xFFBF2E2E),
-                        Color(0xFFCE5E5E)
-                      ])
-              ),
+                      colors: <Color>[Color(0xFFBF2E2E), Color(0xFFCE5E5E)])),
             ),
             title: Text('Voucher'),
             centerTitle: true,
@@ -214,8 +119,10 @@ class _HomePage extends State<HomePage> {
                       // return object of type Dialog
                       return AlertDialog(
                         title: new Text("Chứng năng demo"),
-                        content: new Text("Tính năng sẽ được cập nhật sớm nhất",
-                          style: TextStyle(color: Colors.red),),
+                        content: new Text(
+                          "Tính năng sẽ được cập nhật sớm nhất",
+                          style: TextStyle(color: Colors.red),
+                        ),
                         actions: <Widget>[
                           // usually buttons at the bottom of the dialog
                           new FlatButton(
@@ -233,15 +140,9 @@ class _HomePage extends State<HomePage> {
             ],
             bottom: TabBar(
               tabs: <Widget>[
-                Tab(
-                    text: 'Food'
-                ),
-                Tab(
-                    text: 'Car'
-                ),
-                Tab(
-                    text: 'Bike'
-                )
+                Tab(text: 'Food'),
+                Tab(text: 'Car'),
+                Tab(text: 'Bike')
               ],
             ),
           ),
@@ -261,13 +162,13 @@ class _HomePage extends State<HomePage> {
                               image: new DecorationImage(
                                 fit: BoxFit.fill,
                                 image: AssetImage('assets/avt.jpg'),
-                              )
-                          )),
+                              ))),
                       SizedBox(
                         height: 20.0,
                       ),
                       Text(
-                        "Nguyễn Tiến Anh",style: TextStyle(color: Colors.white),
+                        "Nguyễn Tiến Anh",
+                        style: TextStyle(color: Colors.white),
                       ),
                       SizedBox(
                         height: 10.0,
@@ -278,14 +179,14 @@ class _HomePage extends State<HomePage> {
                       gradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
-
                           colors: <Color>[
-                            Color(0xFFBF2E2E),
-                            Color(0xFFCE5E5E)
-                          ])
-                  ),
+                        Color(0xFFBF2E2E),
+                        Color(0xFFCE5E5E)
+                      ])),
                 ),
-                SizedBox(height: 20,),
+                SizedBox(
+                  height: 20,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
@@ -300,19 +201,21 @@ class _HomePage extends State<HomePage> {
                             image: new DecorationImage(
                               fit: BoxFit.fill,
                               image: AssetImage('assets/grab.png'),
-                            )
-                        )),
+                            ))),
                     OutlineButton(
                       color: Colors.white,
                       borderSide: BorderSide(color: Colors.white),
-                      child: Text("Grab",style: TextStyle(color: Color.fromRGBO(0, 60, 141, 1)),),
-                      onPressed: (){
-
-                      },
+                      child: Text(
+                        "Grab",
+                        style: TextStyle(color: Color.fromRGBO(0, 60, 141, 1)),
+                      ),
+                      onPressed: () {},
                     )
                   ],
                 ),
-                SizedBox(height: 20,),
+                SizedBox(
+                  height: 20,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
@@ -327,14 +230,15 @@ class _HomePage extends State<HomePage> {
                             image: new DecorationImage(
                               fit: BoxFit.fill,
                               image: AssetImage('assets/goviet.png'),
-                            )
-                        )),
+                            ))),
                     OutlineButton(
                       color: Colors.white,
                       borderSide: BorderSide(color: Colors.white),
-                      child: Text("Goviet",style: TextStyle(color: Color.fromRGBO(0, 60, 141, 1)),),
-                      onPressed: (){
-                      },
+                      child: Text(
+                        "Goviet",
+                        style: TextStyle(color: Color.fromRGBO(0, 60, 141, 1)),
+                      ),
+                      onPressed: () {},
                     )
                   ],
                 ),
@@ -342,39 +246,183 @@ class _HomePage extends State<HomePage> {
             ),
           ),
           body: TabBarView(
-            children: containers,
-          )
-      ),
+            children: <Container>[
+              Container(
+                child: BlocListener<VoucherBloc, VoucherState>(
+                  listener: (context,state){
+                    if (state is VoucherErrorState) {
+                      Scaffold.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(state.message),
+                        ),
+                      );
+                    }
+                  },
+                  child: BlocBuilder<VoucherBloc,VoucherState>(
+                    builder: (context, state){
+                      if (state is VoucherInitialState) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (state is VoucherLoadingState) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (state is VoucherLoadedState) {
+                        return buildVoucherList(state.voucher);
+                      } else if (state is VoucherErrorState) {
+                        return buildErrorUi(state.message);
+                      }
+                    },
+                  ),
+                ),
+              ),
+              Container(
+                child: ListView.separated(
+                  padding: const EdgeInsets.all(30),
+                  itemCount: 8,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Card(
+                      color: Colors.white,
+                      child: InkWell(
+                        splashColor: Colors.blue.withAlpha(30),
+                        onTap: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) => CustomDialog(
+                                name: "Giảm giá 40%",
+                                voucher: "Code: XAV360",
+                                descripsion:
+                                "Chỉ áp dụng cho đơn hàng đầu tiên thanh toán tiền mặt, áp dụng với khách hàng mới của GrabFood",
+                              ));
+                        },
+                        child: Container(
+                          height: 200,
+                          child: Row(
+                            children: [
+                              Image(
+                                height: 100,
+                                image: AssetImage('assets/vouchergrab.jpg'),
+                              ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Giảm 40%',
+                                      style: TextStyle(color: Colors.red, fontSize: 30),
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    Text(
+                                      'Mã giảm giá: ******',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) => const Divider(),
+                ),
+              ),
+              Container(
+                child: ListView.separated(
+                  padding: const EdgeInsets.all(30),
+                  itemCount: 8,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Card(
+                      color: Colors.white,
+                      child: InkWell(
+                        splashColor: Colors.blue.withAlpha(30),
+                        onTap: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) => CustomDialog(
+                                name: "Giảm giá 40%",
+                                voucher: "Code: XAV360",
+                                descripsion:
+                                "Chỉ áp dụng cho đơn hàng đầu tiên thanh toán tiền mặt, áp dụng với khách hàng mới của GrabFood",
+                              ));
+                        },
+                        child: Container(
+                          height: 200,
+                          child: Row(
+                            children: [
+                              Image(
+                                height: 100,
+                                image: AssetImage('assets/vouchergrab.jpg'),
+                              ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Giảm 40%',
+                                      style: TextStyle(color: Colors.red, fontSize: 30),
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    Text(
+                                      'Mã giảm giá: ******',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) => const Divider(),
+                ),
+              ),
+            ],
+          )),
     );
   }
 }
 
-class CustomDialog extends StatelessWidget{
-  final String voucher,descripsion,buttontext,name;
+class CustomDialog extends StatelessWidget {
+  final String voucher, descripsion, buttontext, name;
   final Image image;
 
-  CustomDialog({this.voucher,this.descripsion,this.buttontext, this.image,this.name});
+  CustomDialog(
+      {this.voucher, this.descripsion, this.buttontext, this.image, this.name});
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       elevation: 0,
       backgroundColor: Colors.transparent,
       child: dialogContent(context),
     );
   }
-  dialogContent(BuildContext context){
+
+  dialogContent(BuildContext context) {
     return Stack(
       children: [
         Container(
-          padding: EdgeInsets.only(
-              top: 100,
-              bottom: 16,
-              left: 16,
-              right: 16
-          ),
+          padding: EdgeInsets.only(top: 100, bottom: 16, left: 16, right: 16),
           margin: EdgeInsets.only(top: 16),
           decoration: BoxDecoration(
               color: Colors.white,
@@ -384,39 +432,36 @@ class CustomDialog extends StatelessWidget{
                 BoxShadow(
                     color: Colors.black,
                     blurRadius: 10.0,
-                    offset: Offset(0.0,10.0)
-                )
-              ]
-          ),
+                    offset: Offset(0.0, 10.0))
+              ]),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 name,
-                style: TextStyle(
-                    fontSize: 15
-                ),
+                style: TextStyle(fontSize: 15),
               ),
-              SizedBox(height: 25,),
+              SizedBox(
+                height: 25,
+              ),
               Text(
                 descripsion,
-                style: TextStyle(
-                    fontSize: 15
-                ),
+                style: TextStyle(fontSize: 15),
               ),
-              SizedBox(height: 25,),
+              SizedBox(
+                height: 25,
+              ),
               Text(
                 voucher,
-                style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.w600
-                ),
+                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
               ),
-              SizedBox(height: 25,),
+              SizedBox(
+                height: 25,
+              ),
               Align(
                 alignment: Alignment.bottomRight,
                 child: FlatButton(
-                  onPressed: (){
+                  onPressed: () {
                     Navigator.pop(context);
                   },
                   child: Text('Close'),
@@ -432,8 +477,7 @@ class CustomDialog extends StatelessWidget{
             child: CircleAvatar(
               backgroundImage: AssetImage('assets/grab.png'),
               radius: 50,
-            )
-        )
+            ))
       ],
     );
   }
