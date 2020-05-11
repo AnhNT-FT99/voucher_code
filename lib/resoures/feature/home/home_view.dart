@@ -22,64 +22,64 @@ class _HomePage extends State<HomePage> {
   }
 
   Widget buildVoucherList(List<Voucher> articles) {
-      return Container(
-        child: ListView.builder(
-          padding: const EdgeInsets.all(30),
-          itemCount: articles.length,
-          itemBuilder: (ctx, pos) {
-            return Card(
-              color: Colors.white,
-              child: InkWell(
-                splashColor: Colors.blue.withAlpha(30),
-                onTap: () {
-                  showDialog(
-                      context: context,
-                      builder: (context) => CustomDialog(
-                        name: "Giảm giá 40%",
-                        voucher: "Code: XAV360",
-                        descripsion:
-                        "Chỉ áp dụng cho đơn hàng đầu tiên thanh toán tiền mặt, áp dụng với khách hàng mới của GrabFood",
-                      ));
-                },
-                child: Container(
-                  height: 200,
-                  child: Row(
-                    children: [
-                      Image(
-                        height: 100,
-                        image: AssetImage('assets/vouchergrab.jpg'),
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              '${ articles[pos].voucherName}',
-                              style: TextStyle(color: Colors.red, fontSize: 30),
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Text(
-                              'Mã giảm giá: ******',
-                              style: TextStyle(
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
+    return Container(
+          child: ListView.separated(
+            padding: const EdgeInsets.all(30),
+            itemCount: articles.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Card(
+                color: Colors.white,
+                child: InkWell(
+                  splashColor: Colors.blue.withAlpha(30),
+                  onTap: () {
+                    showDialog(
+                        context: context,
+                        builder: (context) => CustomDialog(
+                          name: articles[index].voucherName,
+                          voucher: articles[index].voucherCode,
+                          descripsion: articles[index].voucherDes,
+                        ));
+                  },
+                  child: Container(
+                    height: 200,
+                    child: Row(
+                      children: [
+                        Image(
+                          height: 100,
+                          image: AssetImage('assets/vouchergrab.jpg'),
                         ),
-                      )
-                    ],
+                        SizedBox(
+                          width: 30,
+                        ),
+                        Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                articles[index].voucherCode,
+                                style: TextStyle(color: Colors.red, fontSize: 25),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Text(
+                                'Mã giảm giá: ******',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            );
-          },
-        ),
-      );
+              );
+            },
+            separatorBuilder: (BuildContext context, int index) => const Divider(),
+          ),
+        );
   }
   Widget buildErrorUi(String message) {
     return Center(
@@ -138,13 +138,6 @@ class _HomePage extends State<HomePage> {
                 },
               ),
             ],
-            bottom: TabBar(
-              tabs: <Widget>[
-                Tab(text: 'Food'),
-                Tab(text: 'Car'),
-                Tab(text: 'Bike')
-              ],
-            ),
           ),
           drawer: Drawer(
             child: ListView(
@@ -180,9 +173,9 @@ class _HomePage extends State<HomePage> {
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: <Color>[
-                        Color(0xFFBF2E2E),
-                        Color(0xFFCE5E5E)
-                      ])),
+                            Color(0xFFBF2E2E),
+                            Color(0xFFCE5E5E)
+                          ])),
                 ),
                 SizedBox(
                   height: 20,
@@ -245,161 +238,42 @@ class _HomePage extends State<HomePage> {
               ],
             ),
           ),
-          body: TabBarView(
-            children: <Container>[
-              Container(
-                child: BlocListener<VoucherBloc, VoucherState>(
-                  listener: (context,state){
-                    if (state is VoucherErrorState) {
-                      Scaffold.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(state.message),
-                        ),
-                      );
-                    }
-                  },
-                  child: BlocBuilder<VoucherBloc,VoucherState>(
-                    builder: (context, state){
-                      if (state is VoucherInitialState) {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else if (state is VoucherLoadingState) {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else if (state is VoucherLoadedState) {
-                        return buildVoucherList(state.voucher);
-                      } else if (state is VoucherErrorState) {
-                        return buildErrorUi(state.message);
-                      }
-                    },
-                  ),
-                ),
-              ),
-              Container(
-                child: ListView.separated(
-                  padding: const EdgeInsets.all(30),
-                  itemCount: 8,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Card(
-                      color: Colors.white,
-                      child: InkWell(
-                        splashColor: Colors.blue.withAlpha(30),
-                        onTap: () {
-                          showDialog(
-                              context: context,
-                              builder: (context) => CustomDialog(
-                                name: "Giảm giá 40%",
-                                voucher: "Code: XAV360",
-                                descripsion:
-                                "Chỉ áp dụng cho đơn hàng đầu tiên thanh toán tiền mặt, áp dụng với khách hàng mới của GrabFood",
-                              ));
-                        },
-                        child: Container(
-                          height: 200,
-                          child: Row(
-                            children: [
-                              Image(
-                                height: 100,
-                                image: AssetImage('assets/vouchergrab.jpg'),
-                              ),
-                              SizedBox(
-                                width: 20,
-                              ),
-                              Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      'Giảm 40%',
-                                      style: TextStyle(color: Colors.red, fontSize: 30),
-                                    ),
-                                    SizedBox(
-                                      height: 20,
-                                    ),
-                                    Text(
-                                      'Mã giảm giá: ******',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
+          body: Container(
+            child: BlocListener<VoucherBloc, VoucherState>(
+              listener: (context,state){
+                if (state is VoucherErrorState) {
+                  Scaffold.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.message),
+                    ),
+                  );
+                }
+              },
+              child: BlocBuilder<VoucherBloc,VoucherState>(
+                builder: (context, state){
+                  if (state is VoucherInitialState) {
+                    return Center(
+                      child: CircularProgressIndicator(),
                     );
-                  },
-                  separatorBuilder: (BuildContext context, int index) => const Divider(),
-                ),
-              ),
-              Container(
-                child: ListView.separated(
-                  padding: const EdgeInsets.all(30),
-                  itemCount: 8,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Card(
-                      color: Colors.white,
-                      child: InkWell(
-                        splashColor: Colors.blue.withAlpha(30),
-                        onTap: () {
-                          showDialog(
-                              context: context,
-                              builder: (context) => CustomDialog(
-                                name: "Giảm giá 40%",
-                                voucher: "Code: XAV360",
-                                descripsion:
-                                "Chỉ áp dụng cho đơn hàng đầu tiên thanh toán tiền mặt, áp dụng với khách hàng mới của GrabFood",
-                              ));
-                        },
-                        child: Container(
-                          height: 200,
-                          child: Row(
-                            children: [
-                              Image(
-                                height: 100,
-                                image: AssetImage('assets/vouchergrab.jpg'),
-                              ),
-                              SizedBox(
-                                width: 20,
-                              ),
-                              Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      'Giảm 40%',
-                                      style: TextStyle(color: Colors.red, fontSize: 30),
-                                    ),
-                                    SizedBox(
-                                      height: 20,
-                                    ),
-                                    Text(
-                                      'Mã giảm giá: ******',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
+                  } else if (state is VoucherLoadingState) {
+                    return Center(
+                      child: CircularProgressIndicator(),
                     );
-                  },
-                  separatorBuilder: (BuildContext context, int index) => const Divider(),
-                ),
+                  } else if (state is VoucherLoadedState) {
+                    return buildVoucherList(state.voucher);
+                  } else if (state is VoucherErrorState) {
+                    return buildErrorUi(state.message);
+                  }
+                },
               ),
-            ],
-          )),
+            ),
+          ),
+      ),
     );
   }
 }
+
+
 
 class CustomDialog extends StatelessWidget {
   final String voucher, descripsion, buttontext, name;

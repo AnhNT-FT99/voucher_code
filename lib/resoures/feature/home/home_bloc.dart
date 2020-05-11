@@ -27,5 +27,4 @@ class VoucherBloc extends Bloc<VoucherEvent, VoucherState> {
       }
     }
   }
-
 }
